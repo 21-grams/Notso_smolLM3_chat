@@ -5,100 +5,70 @@
 ### **Root Project Structure**
 ```
 stt-chatbot/
-├── Cargo.toml                                 # Updated dependencies
+├── Cargo.toml
 ├── src/
 │   ├── main.rs                               # Application entry point
-│   ├── lib.rs                                # Library exports
+│   ├── lib.rs                                # Library exports  
 │   ├── error.rs                              # Centralized error handling
 │   ├── config.rs                             # Application configuration
 │   │
-│   ├── handlers/                             # Axum route handlers
+│   ├── handlers/                             # 🎯 SIMPLIFIED HANDLERS
 │   │   ├── mod.rs
-│   │   ├── chat.rs                          # Chat endpoints
-│   │   ├── streaming.rs                     # SSE handlers
-│   │   ├── session.rs                       # Session management
+│   │   ├── chat.rs                          # Single unified chat handler
 │   │   └── health.rs                        # Health checks
 │   │
-│   ├── services/
+│   ├── services/                             # 🔥 CORE SERVICES
 │   │   ├── mod.rs
 │   │   │
-│   │   ├── ml/                              # 🔥 CORE AI SERVICES
+│   │   ├── ml/                              # AI Services
 │   │   │   ├── mod.rs
+│   │   │   ├── service.rs                   # Unified ML service (streaming built-in)
+│   │   │   ├── buffer.rs                    # Token buffer management
+│   │   │   ├── events.rs                    # Chat event types
 │   │   │   │
-│   │   │   ├── official/                    # Official Candle foundation
+│   │   │   ├── official/                    # Official Candle Foundation  
 │   │   │   │   ├── mod.rs
-│   │   │   │   ├── model.rs                 # Official quantized_llama wrapper
-│   │   │   │   ├── config.rs                # LlamaConfig + SmolLM3 extensions
-│   │   │   │   ├── loader.rs                # Official GGUF loading
-│   │   │   │   ├── inference.rs             # Core inference engine
+│   │   │   │   ├── model.rs                 # quantized_llama wrapper
+│   │   │   │   ├── config.rs                # SmolLM3Config
+│   │   │   │   ├── loader.rs                # GGUF loading
 │   │   │   │   └── device.rs                # Device management
 │   │   │   │
-│   │   │   ├── smollm3/                     # SmolLM3-specific extensions
-│   │   │   │   ├── mod.rs
-│   │   │   │   ├── adapter.rs               # Bridge official → SmolLM3
-│   │   │   │   ├── nope_layers.rs           # No Position Encoding logic
-│   │   │   │   ├── thinking.rs              # Thinking mode detection
-│   │   │   │   ├── tokenizer.rs             # SmolLM3 tokenizer wrapper
-│   │   │   │   └── generation.rs            # SmolLM3 generation pipeline
-│   │   │   │
-│   │   │   ├── streaming/                   # Real-time generation
-│   │   │   │   ├── mod.rs
-│   │   │   │   ├── sse.rs                   # Server-sent events
-│   │   │   │   ├── events.rs                # Event types & serialization
-│   │   │   │   ├── manager.rs               # Connection management
-│   │   │   │   └── pipeline.rs              # Streaming pipeline
-│   │   │   │
-│   │   │   └── service.rs                   # High-level ML service interface
+│   │   │   └── smollm3/                     # SmolLM3 Extensions
+│   │   │       ├── mod.rs  
+│   │   │       ├── adapter.rs               # Bridge official → SmolLM3
+│   │   │       ├── thinking.rs              # Thinking mode detection
+│   │   │       ├── tokenizer.rs             # SmolLM3 tokenizer
+│   │   │       └── generation.rs            # Generation with streaming
 │   │   │
-│   │   ├── conversation/                    # Conversation management
+│   │   ├── session/                         # Session Management
 │   │   │   ├── mod.rs
-│   │   │   ├── session.rs                   # Session lifecycle
-│   │   │   ├── context.rs                   # Context management
-│   │   │   └── history.rs                   # Message history
+│   │   │   ├── manager.rs                   # Session lifecycle
+│   │   │   └── broadcaster.rs               # SSE event broadcasting
 │   │   │
-│   │   └── template/                        # Template rendering
+│   │   └── template/                        # Template Rendering
 │   │       ├── mod.rs
 │   │       ├── engine.rs                    # MiniJinja wrapper
-│   │       ├── chat.rs                      # Chat template formatting
-│   │       └── components.rs                # UI component rendering
+│   │       └── chat.rs                      # SmolLM3 chat template
 │   │
-│   ├── models/                              # Data structures
+│   ├── models/                              # Data Types
 │   │   ├── mod.rs
-│   │   ├── chat.rs                          # Chat message types
+│   │   ├── chat.rs                          # Chat types
 │   │   ├── session.rs                       # Session types
-│   │   ├── events.rs                        # SSE event types
-│   │   └── config.rs                        # Configuration types
+│   │   └── events.rs                        # Event types
 │   │
-│   ├── utils/                               # Utilities
-│   │   ├── mod.rs
-│   │   ├── device.rs                        # Device detection
-│   │   ├── performance.rs                   # Performance monitoring
-│   │   └── validation.rs                    # Input validation
-│   │
-│   └── bin/                                 # Binary targets
-│       ├── server.rs                        # Web server binary
-│       ├── test_official.rs                 # Test official Candle integration
-│       └── benchmark.rs                     # Performance benchmarking
+│   └── utils/                               # Utilities
+│       ├── mod.rs
+│       ├── device.rs                        # Device detection
+│       └── performance.rs                   # Performance monitoring
 │
-├── templates/                               # MiniJinja templates
+├── templates/                               # MiniJinja Templates
 │   ├── base.html                           # Base layout
-│   ├── chat/
-│   │   ├── page.html                       # Main chat page
-│   │   ├── message_user.html               # User message component
-│   │   ├── message_assistant.html          # Assistant message component
-│   │   ├── thinking_bubble.html            # Thinking mode component
-│   │   └── smollm3_chat.jinja2            # SmolLM3 chat template
-│   └── components/
-│       ├── loading.html                    # Loading indicators
-│       ├── error.html                      # Error components
-│       └── controls.html                   # UI controls
+│   ├── chat.html                           # Single chat page
+│   └── smollm3_chat.jinja2                 # SmolLM3 template
 │
 ├── static/                                 # Static assets
 ├── models/                                 # AI model files
-└── tests/                                  # Integration tests
-    ├── integration/
-    ├── fixtures/
-    └── performance/
+└── tests/                                  # Tests
 ```
 
 ## 📋 **Detailed File Breakdown**
